@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 
-from core.domain.fixture_categories import FixtureCategory
+from core.domain.fixture_category import FixtureCategory
 
 
 @dataclass(frozen=True)

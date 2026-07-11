@@ -1,87 +1,72 @@
-from core.domain.fixture_function import FixtureFunction
-from core.domain.fixture_categories import FixtureCategory
+"""
+function_catalog.py
+
+Stores and looks up canonical fixture functions.
+"""
+
+from core.domain.standard_functions import *
 
 
-PAN = FixtureFunction(
-    "PAN",
-    "Pan",
-    FixtureCategory.MOVEMENT,
-    10,
-)
+class FunctionCatalog:
 
-PAN_FINE = FixtureFunction(
-    "PAN_FINE",
-    "Pan Fine",
-    FixtureCategory.MOVEMENT,
-    9,
-)
+    def __init__(self):
 
-TILT = FixtureFunction(
-    "TILT",
-    "Tilt",
-    FixtureCategory.MOVEMENT,
-    10,
-)
+        self._functions = {}
+        self._aliases = {}
 
-TILT_FINE = FixtureFunction(
-    "TILT_FINE",
-    "Tilt Fine",
-    FixtureCategory.MOVEMENT,
-    9,
-)
+    def register(self, function):
 
-DIMMER = FixtureFunction(
-    "DIMMER",
-    "Dimmer",
-    FixtureCategory.BEAM,
-    10,
-)
+        self._functions[function.id] = function
 
-SHUTTER = FixtureFunction(
-    "SHUTTER",
-    "Shutter",
-    FixtureCategory.BEAM,
-    9,
-)
+        self.register_alias(
+            function.display_name,
+            function
+        )
 
-COLOR = FixtureFunction(
-    "COLOR",
-    "Color",
-    FixtureCategory.COLOR,
-    8,
-)
+    def register_alias(self, alias, function):
 
-GOBO = FixtureFunction(
-    "GOBO",
-    "Gobo",
-    FixtureCategory.GOBO,
-    7,
-)
+        self._aliases[alias.strip().lower()] = function
 
-PRISM = FixtureFunction(
-    "PRISM",
-    "Prism",
-    FixtureCategory.EFFECT,
-    6,
-)
+    def lookup(self, text):
 
-FOCUS = FixtureFunction(
-    "FOCUS",
-    "Focus",
-    FixtureCategory.BEAM,
-    5,
-)
+        if not text:
+            return None
 
-ZOOM = FixtureFunction(
-    "ZOOM",
-    "Zoom",
-    FixtureCategory.BEAM,
-    5,
-)
+        return self._aliases.get(
+            text.strip().lower()
+        )
 
-FROST = FixtureFunction(
-    "FROST",
-    "Frost",
-    FixtureCategory.BEAM,
-    2,
-)
+    def by_id(self, id):
+
+        return self._functions.get(id)
+
+    def exists(self, id):
+
+        return id in self._functions
+
+    def count(self):
+
+        return len(self._functions)
+
+    def all(self):
+
+        return list(self._functions.values())
+
+    def alias_count(self):
+
+        return len(self._aliases)
+
+    def load_defaults(self):
+
+        self.register(PAN)
+        self.register(PAN_FINE)
+        self.register(TILT)
+        self.register(TILT_FINE)
+        self.register(DIMMER)
+        self.register(SHUTTER)
+        self.register(COLOR)
+        self.register(GOBO)
+        self.register(PRISM)
+        self.register(FOCUS)
+        self.register(ZOOM)
+        self.register(FROST)
