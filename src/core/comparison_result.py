@@ -1,15 +1,16 @@
 """
 comparison_result.py
 
-Represents the comparison of one fixture function.
+Represents one compared fixture function.
 """
 
 from dataclasses import dataclass
 
+from core.comparison_status import ComparisonStatus
+
 
 @dataclass
 class ComparisonResult:
-    """Represents one compared function."""
 
     function: str
 
@@ -17,16 +18,29 @@ class ComparisonResult:
 
     destination_channel: int | None = None
 
-    status: str = "UNKNOWN"
+    status: ComparisonStatus = ComparisonStatus.UNKNOWN
 
     def is_match(self):
-        return self.status == "MATCH"
+
+        return self.status == ComparisonStatus.MATCH
 
     def is_different(self):
-        return self.status == "DIFFERENT"
+
+        return self.status == ComparisonStatus.DIFFERENT
 
     def is_missing(self):
-        return self.status == "MISSING"
+
+        return self.status == ComparisonStatus.MISSING
 
     def is_extra(self):
-        return self.status == "EXTRA"
+
+        return self.status == ComparisonStatus.EXTRA
+
+    def __str__(self):
+
+        return (
+            f"{self.function}: "
+            f"{self.source_channel} -> "
+            f"{self.destination_channel} "
+            f"({self.status})"
+        )
