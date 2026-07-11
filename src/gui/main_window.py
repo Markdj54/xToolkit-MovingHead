@@ -1,144 +1,120 @@
 from PySide6.QtWidgets import (
-    QMainWindow,
-    QWidget,
-    QFileDialog,
-    QListWidget,
-    QTableWidget,
-    QTableWidgetItem,
-    QVBoxLayout,
-    QHBoxLayout,
-    QSplitter,
-    QToolBar,
-    QMessageBox
+    QMainWindow, QWidget, QListWidget, QPushButton,
+    QSplitter, QVBoxLayout, QCheckBox, QFileDialog,
+    QToolBar, QGroupBox
 )
-
 from PySide6.QtGui import QAction
 from PySide6.QtCore import Qt
 
 from core.xml_reader import XMLReader
+from gui.fixture_view import FixtureView
 
 
 class MainWindow(QMainWindow):
 
     def __init__(self):
-
         super().__init__()
 
         self.reader = XMLReader()
 
-        self.setWindowTitle("xToolkit v0.1 Alpha")
-
-        self.resize(1200, 700)
+        self.setWindowTitle("xToolkit")
+        self.resize(1500, 850)
 
         self.create_toolbar()
+        self.create_widgets()
+        self.create_layout()
+        self.connect_signals()
 
-        self.create_ui()
-
-        self.statusBar().showMessage("Ready")
-
-    # -------------------------------------------------
+        self.statusBar().showMessage("Version 0.4.0 Alpha    Ready")
 
     def create_toolbar(self):
-
-        toolbar = QToolBar()
-
+        toolbar = QToolBar("Main")
+        toolbar.setMovable(False)
         self.addToolBar(toolbar)
 
-        open_action = QAction("Open XML", self)
+        self.open_action = QAction("📂 Open XML", self)
+        self.open_action.triggered.connect(self.open_xml)
+        toolbar.addAction(self.open_action)
 
-        open_action.triggered.connect(self.open_xml)
+        toolbar.addSeparator()
 
-        toolbar.addAction(open_action)
+        self.compare_action = QAction("🔄 Compare", self)
+        self.compare_action.setEnabled(False)
+        toolbar.addAction(self.compare_action)
 
-    # -------------------------------------------------
+        toolbar.addSeparator()
 
-    def create_ui(self):
+        self.export_action = QAction("💾 Export", self)
+        self.export_action.setEnabled(False)
+        toolbar.addAction(self.export_action)
 
+        toolbar.addSeparator()
+
+        self.about_action = QAction("❓ About", self)
+        toolbar.addAction(self.about_action)
+
+    def create_widgets(self):
+        self.filter = QCheckBox("Moving Heads Only")
+        self.source = QListWidget()
+        self.destination = QListWidget()
+        self.viewer = FixtureView()
+        self.compare = QPushButton("🔄 Compare Fixtures")
+        self.compare.setMinimumHeight(42)
+        self.compare.setEnabled(False)
+
+    def create_layout(self):
         splitter = QSplitter(Qt.Horizontal)
 
-        self.model_list = QListWidget()
+        sg = QGroupBox("Original Fixture")
+        sl = QVBoxLayout(sg)
+        sl.addWidget(self.source)
 
-        self.property_table = QTableWidget()
+        dg = QGroupBox("Replacement Fixture")
+        dl = QVBoxLayout(dg)
+        dl.addWidget(self.destination)
 
-        self.property_table.setColumnCount(2)
+        vg = QGroupBox("Fixture Information")
+        vl = QVBoxLayout(vg)
+        vl.addWidget(self.viewer)
 
-        self.property_table.setHorizontalHeaderLabels(
-            ["Property", "Value"]
-        )
+        splitter.addWidget(sg)
+        splitter.addWidget(dg)
+        splitter.addWidget(vg)
+        splitter.setSizes([280,280,940])
 
-        splitter.addWidget(self.model_list)
+        central = QWidget()
+        layout = QVBoxLayout(central)
+        layout.addWidget(self.filter)
+        layout.addWidget(splitter)
+        layout.addWidget(self.compare)
+        self.setCentralWidget(central)
 
-        splitter.addWidget(self.property_table)
-
-        splitter.setSizes([300, 900])
-
-        self.setCentralWidget(splitter)
-
-        self.model_list.currentTextChanged.connect(
-            self.show_properties
-        )
-
-    # -------------------------------------------------
+    def connect_signals(self):
+        self.source.currentTextChanged.connect(self.show_source)
+        self.destination.currentTextChanged.connect(self.enable_compare)
+        self.filter.stateChanged.connect(self.refresh)
 
     def open_xml(self):
-
-        filename, _ = QFileDialog.getOpenFileName(
-            self,
-            "Open rgbeffects.xml",
-            "",
-            "XML Files (*.xml)"
-        )
-
-        if filename == "":
+        filename,_=QFileDialog.getOpenFileName(self,"Open rgbeffects.xml","","XML Files (*.xml)")
+        if not filename:
             return
+        if self.reader.load(filename):
+            self.refresh()
+            mh=len(self.reader.get_moving_heads())
+            self.statusBar().showMessage(f"Models: {self.reader.count()} | Moving Heads: {mh} | Version 0.4.0 Alpha")
 
-        if not self.reader.load(filename):
+    def refresh(self):
+        names=[m.name for m in self.reader.get_moving_heads()] if self.filter.isChecked() else self.reader.get_model_names()
+        self.source.clear()
+        self.destination.clear()
+        self.source.addItems(names)
+        self.destination.addItems(names)
 
-            QMessageBox.warning(
-                self,
-                "Error",
-                "Could not load XML."
-            )
+    def show_source(self,name):
+        self.viewer.show_fixture(self.reader.get_model(name))
+        self.enable_compare()
 
-            return
-
-        self.model_list.clear()
-
-        self.model_list.addItems(
-            self.reader.get_model_names()
-        )
-
-        self.statusBar().showMessage(
-            f"{self.reader.count()} models loaded"
-        )
-
-    # -------------------------------------------------
-
-    def show_properties(self, name):
-
-        model = self.reader.get_model(name)
-
-        if model is None:
-            return
-
-        self.property_table.setRowCount(
-            len(model.attributes)
-        )
-
-        row = 0
-
-        for key, value in sorted(model.items()):
-
-            self.property_table.setItem(
-                row,
-                0,
-                QTableWidgetItem(key)
-            )
-
-            self.property_table.setItem(
-                row,
-                1,
-                QTableWidgetItem(str(value))
-            )
-
-            row += 1
+    def enable_compare(self):
+        enabled=self.source.currentItem() is not None and self.destination.currentItem() is not None
+        self.compare.setEnabled(enabled)
+        self.compare_action.setEnabled(enabled)

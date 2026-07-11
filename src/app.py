@@ -4,10 +4,16 @@ from PySide6.QtWidgets import QApplication
 
 from gui.main_window import MainWindow
 
+from gui.styles import DARK_STYLE
+
+
 
 def main():
 
+
     app = QApplication(sys.argv)
+
+    app.setStyleSheet(DARK_STYLE)
 
     window = MainWindow()
 

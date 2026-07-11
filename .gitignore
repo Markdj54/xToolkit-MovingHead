@@ -1,0 +1,17 @@
+# Python
+__pycache__/
+*.pyc
+
+# VS Code
+.vscode/
+*.code-workspace
+
+# Archives
+*.zip
+*.7z
+
+# Temporary files
+*.log
+
+# Test data
+src/xlights_rgbeffects.xml
