@@ -4,7 +4,7 @@ function_catalog.py
 Stores and looks up canonical fixture functions.
 """
 
-from core.domain.standard_functions import *
+from core.domain.canonical_functions import *
 
 
 class FunctionCatalog:
