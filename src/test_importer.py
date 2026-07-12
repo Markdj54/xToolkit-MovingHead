@@ -1,33 +1,80 @@
 from core.xml_reader import XMLReader
+
 from core.domain.function_catalog import FunctionCatalog
+
 from core.services.alias_service import AliasService
+from core.services.unknown_function_registry import (
+    UnknownFunctionRegistry,
+)
+
 from core.importers.xlights_importer import XLightsImporter
 
+
+# ------------------------------------------
+# Build services
+# ------------------------------------------
+
+catalog = FunctionCatalog()
+catalog.load_defaults()
+
+alias_service = AliasService(catalog)
+
+registry = UnknownFunctionRegistry()
+
+importer = XLightsImporter(
+    alias_service,
+    registry,
+)
+
+# ------------------------------------------
+# Read xLights XML
+# ------------------------------------------
 
 reader = XMLReader()
 
 reader.load("xlights_rgbeffects.xml")
 
-catalog = FunctionCatalog()
-catalog.load_defaults()
-
-alias = AliasService(catalog)
-
-importer = XLightsImporter(alias)
+# ------------------------------------------
+# Import first moving head
+# ------------------------------------------
 
 for model in reader.get_models():
 
-    if model.is_moving_head():
+    if not model.is_moving_head():
+        continue
 
-        fixture = importer.import_model(model)
+    fixture = importer.import_model(model)
 
-        print("--------------------------------")
-        print(fixture.name)
+    print("--------------------------------")
+    print("Fixture:", fixture.name)
+    print("--------------------------------")
 
-        for capability in fixture.capabilities:
-            print(
-                capability.channel,
-                capability.function.display_name
-            )
+    for capability in fixture.capabilities:
 
-        break
+        print(
+            f"{capability.channel:2d}  "
+            f"{capability.function.display_name}"
+        )
+
+    break
+
+# ------------------------------------------
+# Display unknown functions
+# ------------------------------------------
+
+print()
+
+print("--------------------------------")
+print("Unknown Functions")
+print("--------------------------------")
+
+for name in registry.all():
+
+    print(name)
+
+print()
+
+print(
+    f"Unknown Function Count: "
+    f"{registry.count()}"
+)

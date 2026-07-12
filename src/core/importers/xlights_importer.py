@@ -7,12 +7,21 @@ Converts xLights models into CanonicalFixture objects.
 from core.domain.canonical_fixture import CanonicalFixture
 from core.domain.fixture_capability import FixtureCapability
 from core.services.alias_service import AliasService
+from core.services.unknown_function_registry import (
+    UnknownFunctionRegistry,
+)
 
 
 class XLightsImporter:
 
-    def __init__(self, alias_service: AliasService):
+    def __init__(
+        self,
+        alias_service: AliasService,
+        registry: UnknownFunctionRegistry,
+    ):
+
         self.alias_service = alias_service
+        self.registry = registry
 
     def import_model(self, model) -> CanonicalFixture:
 
@@ -28,11 +37,10 @@ class XLightsImporter:
             function = self.alias_service.lookup(channel_name)
 
             if function is None:
-                print(
-                    f"Unknown Channel {channel}: "
-                    f"'{channel_name}'"
-         )
-            continue
+
+                self.registry.add(channel_name)
+
+                continue
 
             capability = FixtureCapability(
                 function=function,
