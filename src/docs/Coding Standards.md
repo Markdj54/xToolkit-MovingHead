@@ -343,3 +343,13 @@ Avoid duplicate code.
 Make the code obvious rather than clever.
 
 When in doubt, choose readability.
+
+# Development Workflow
+
+Before implementing a new feature:
+
+1. Read PROJECT_STATUS.md
+2. Read the current sprint goal.
+3. Extend existing classes where practical.
+4. Avoid introducing new domain objects unless a genuine gap exists.
+5. Replace complete files rather than partial snippets.

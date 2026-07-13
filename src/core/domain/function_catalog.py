@@ -58,15 +58,33 @@ class FunctionCatalog:
 
     def load_defaults(self):
 
+        # Movement
         self.register(PAN)
         self.register(PAN_FINE)
         self.register(TILT)
         self.register(TILT_FINE)
+        self.register(PAN_TILT_SPEED)
+
+        # Beam
         self.register(DIMMER)
         self.register(SHUTTER)
-        self.register(COLOR)
-        self.register(GOBO)
-        self.register(PRISM)
         self.register(FOCUS)
         self.register(ZOOM)
         self.register(FROST)
+        self.register(IRIS)
+
+        # Colour
+        self.register(COLOR)
+
+        # Gobos
+        self.register(GOBO)
+        self.register(GOBO_ROTATE)
+
+        # Effects
+        self.register(PRISM)
+        self.register(PRISM_ROTATE)
+
+        # Control
+        self.register(RESET)
+        self.register(MACRO)
+        self.register(UNUSED)
