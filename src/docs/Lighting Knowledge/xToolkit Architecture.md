@@ -393,3 +393,31 @@ Lighting concepts do not.
 The software should grow by learning more about lighting, not by accumulating fixture-specific exceptions.
 
 When in doubt, choose the design that increases understanding rather than complexity.
+
+Sequence Translation Pipeline
+
+Parameter String
+
+↓
+
+ParameterParser
+
+↓
+
+DMXParameterMapper
+
+↓
+
+Canonical Capability
+
+↓
+
+TranslationMap
+
+↓
+
+ParameterRewriter
+
+↓
+
+Translated Parameter

@@ -568,3 +568,12 @@ Keep the architecture simple enough that hobbyists can contribute.
 If I had to summarize the entire project in one paragraph, I'd write:
 
 xToolkit is a capability-based translation engine for xLights moving-head fixtures. Rather than mapping DMX channels directly, it builds a canonical understanding of what each fixture can do, allowing sequences to be translated between different manufacturers while preserving the original lighting design. Real-world fixture data drives the evolution of the knowledge base, ensuring the software grows from practical experience rather than assumptions.
+
+Fixture Engine
+████████████████████████████ 100%
+
+Sequence Engine
+███████████░░░░░░░░░░░░░░░░░ 35%
+
+GUI
+██░░░░░░░░░░░░░░░░░░░░░░░░░░░ 5%

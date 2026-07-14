@@ -50,3 +50,28 @@ Implement ComparisonEngine using the CanonicalFixture domain model.
 ## Next File
 
 comparison_engine.py
+
+Sequence Engine
+
+Status:
+IN PROGRESS
+
+Completed
+
+✔ Parameter parsing
+
+✔ Parameter mapping
+
+✔ Parameter rewriting
+
+✔ Capability translation
+
+Remaining
+
+□ Effect translation
+
+□ XSQ reader integration
+
+□ XSQ writer
+
+□ End-to-end sequence translation
