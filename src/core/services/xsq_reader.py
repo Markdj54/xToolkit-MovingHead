@@ -69,6 +69,11 @@ class XSQReader:
             effect_type="Unknown",
         )
 
+        #
+        # Preserve the original XML node.
+        #
+        effect.set_xml_element(effect_xml)
+
         raw_text = effect_xml.text
 
         if raw_text is None:
