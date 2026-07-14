@@ -434,3 +434,33 @@ XSQReader
 Any future GDTF or QLC+ readers
 
 It keeps the codebase predictable.
+
+Design Principle #1
+
+xToolkit only modifies Moving Head data.
+
+All non-moving-head xLights effects are preserved exactly as they
+appear in the original sequence.
+
+The goal is not to recreate an xLights sequence.
+
+The goal is to translate moving head programming while leaving the
+rest of the show untouched.
+
+Design Principle #2
+
+xToolkit does not generate moving head motion.
+
+xLights remains responsible for:
+
+- Position generation
+- Path generation
+- Fan calculations
+- Time offsets
+- Groupings
+- Presets
+- Value Curves
+
+xToolkit only remaps the resulting DMX channel references.
+
+This preserves the artistic intent of the original sequence.
