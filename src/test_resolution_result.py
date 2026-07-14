@@ -1,4 +1,4 @@
-from core.domain.standard_functions import PAN
+from core.domain.canonical_functions import PAN
 from core.services.resolution_result import ResolutionResult
 
 result = ResolutionResult(

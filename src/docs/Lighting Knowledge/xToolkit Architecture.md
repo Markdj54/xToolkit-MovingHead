@@ -350,6 +350,7 @@ The following are intentionally outside the scope of xToolkit Version 1.
 
 xToolkit complements xLights.
 
+
 It does not compete with it.
 
 # Coding Style
@@ -421,3 +422,15 @@ ParameterRewriter
 ↓
 
 Translated Parameter
+
+Readers create domain objects.
+
+They never perform translation, validation, optimisation or business logic.
+
+That rule now applies to:
+
+XLightsImporter
+XSQReader
+Any future GDTF or QLC+ readers
+
+It keeps the codebase predictable.

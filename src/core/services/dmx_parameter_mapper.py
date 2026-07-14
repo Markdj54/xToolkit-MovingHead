@@ -1,9 +1,10 @@
 """
 dmx_parameter_mapper.py
 
-Maps xLights DMX parameter names to fixture capabilities.
+Maps xLights DMX parameter names to canonical fixture
+capabilities.
 
-Example:
+Example
 
 E_SLIDER_DMX1
         ↓
@@ -49,9 +50,4 @@ class DMXParameterMapper:
         if channel is None:
             return None
 
-        for capability in self.fixture.capabilities:
-
-            if capability.channel == channel:
-                return capability
-
-        return None
+        return self.fixture.capability_by_channel(channel)

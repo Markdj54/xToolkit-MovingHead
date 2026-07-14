@@ -1,5 +1,5 @@
 from core.domain.function_catalog import FunctionCatalog
-from core.domain.standard_functions import COLOR, DIMMER
+from core.domain.canonical_functions import COLOR, DIMMER
 from core.services.alias_service import AliasService
 
 catalog = FunctionCatalog()
