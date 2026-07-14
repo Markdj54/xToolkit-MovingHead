@@ -25,9 +25,16 @@ class CanonicalFixture:
 
     capabilities: list[FixtureCapability] = field(default_factory=list)
 
-    def add_capability(self, capability: FixtureCapability):
+    # ---------------------------------------------------------
+
+    def add_capability(
+        self,
+        capability: FixtureCapability,
+    ):
 
         self.capabilities.append(capability)
+
+    # ---------------------------------------------------------
 
     def has(self, function):
 
@@ -36,22 +43,35 @@ class CanonicalFixture:
             for c in self.capabilities
         )
 
+    # ---------------------------------------------------------
+
     def capability(self, function):
 
         for capability in self.capabilities:
 
             if capability.function.id == function.id:
-
                 return capability
 
         return None
+
+    # ---------------------------------------------------------
+
+    def capability_by_channel(self, channel):
+
+        for capability in self.capabilities:
+
+            if capability.channel == channel:
+                return capability
+
+        return None
+
+    # ---------------------------------------------------------
 
     def channel_of(self, function):
 
         capability = self.capability(function)
 
         if capability:
-
             return capability.channel
 
         return None
