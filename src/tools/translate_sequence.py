@@ -4,7 +4,7 @@ translate_sequence.py
 Translates an imported xLights sequence from one moving
 head fixture personality to another.
 
-Sprint 13
+Sprint 14
 """
 
 from core.services.rgbeffects_reader import RGBEffectsReader
@@ -28,11 +28,9 @@ from core.services.unknown_function_registry import (
 from core.domain.function_catalog import FunctionCatalog
 
 
-#
 # ------------------------------------------------------------------
 # Configuration
 # ------------------------------------------------------------------
-#
 
 VENDOR_RGBEFFECTS = (
     r"C:\Users\User\xlightsMHConvertor\test_data\xlights_rgbeffects_Darkness.xml"
@@ -59,11 +57,9 @@ DESTINATION_MODEL = (
 )
 
 
-#
 # ------------------------------------------------------------------
 # Helpers
 # ------------------------------------------------------------------
-#
 
 def find_model(models, name):
 
@@ -77,11 +73,9 @@ def find_model(models, name):
     )
 
 
-#
 # ------------------------------------------------------------------
 # Main
 # ------------------------------------------------------------------
-#
 
 def main():
 
@@ -91,11 +85,10 @@ def main():
     print()
 
     #
-    # Build resolver.
+    # Build resolver
     #
 
     catalog = FunctionCatalog()
-
     catalog.load_defaults()
 
     alias_service = AliasService(
@@ -114,12 +107,10 @@ def main():
     )
 
     #
-    # Read vendor fixtures.
+    # Vendor fixture
     #
 
-    vendor_reader = RGBEffectsReader()
-
-    vendor_models = vendor_reader.load(
+    vendor_models = RGBEffectsReader().load(
         VENDOR_RGBEFFECTS,
     )
 
@@ -133,12 +124,10 @@ def main():
     )
 
     #
-    # Read destination fixtures.
+    # Destination fixture
     #
 
-    my_reader = RGBEffectsReader()
-
-    my_models = my_reader.load(
+    my_models = RGBEffectsReader().load(
         MY_RGBEFFECTS,
     )
 
@@ -152,7 +141,7 @@ def main():
     )
 
     #
-    # Build translation map.
+    # Build Translation Map
     #
 
     translation = TranslationBuilder().build(
@@ -160,8 +149,30 @@ def main():
         destination_fixture,
     )
 
+    print("--------------------------------")
+    print("Translation Map")
+    print("--------------------------------")
+
+    for entry in translation:
+
+        status = "OK"
+
+        if not entry.translated:
+            status = "Missing"
+
+        print(
+            f"{entry.function.id:<15}"
+            f"{entry.source_channel:>3}"
+            f" -> "
+            f"{entry.destination_channel:>3}   "
+            f"{status}"
+        )
+
+    print("--------------------------------")
+    print()
+
     #
-    # Build translation pipeline.
+    # Translation Pipeline
     #
 
     mapper = DMXParameterMapper(
@@ -181,22 +192,22 @@ def main():
         effect_translator,
     )
 
-    sequence_translator = SequenceTranslator(
-        effect_translator,
-    )
-
     #
-    # Read sequence.
+    # Read Sequence
     #
 
-    xsq_reader = XSQReader()
+    reader = XSQReader()
 
-    sequence = xsq_reader.read(
+    sequence = reader.read(
         INPUT_XSQ,
     )
 
+    print(
+        f"Effects Loaded : {sequence.effect_count()}"
+    )
+
     #
-    # Translate.
+    # Translate
     #
 
     translated = sequence_translator.translate(
@@ -204,12 +215,14 @@ def main():
     )
 
     #
-    # Write sequence.
+    # Write Sequence
     #
 
     writer = XSQWriter()
 
-    writer.load(INPUT_XSQ)
+    writer.load(
+        INPUT_XSQ,
+    )
 
     changed = writer.write(
         translated,
@@ -219,31 +232,32 @@ def main():
         OUTPUT_XSQ,
     )
 
+    #
+    # Summary
+    #
+
     print()
-
     print("--------------------------------")
-
     print("Translation Complete")
-
     print("--------------------------------")
-
-    print(
-        f"Effects Loaded : {sequence.effect_count()}"
-    )
 
     print(
         f"Parameters Translated : {translation.translated_count()}"
     )
 
     print(
-        f"Effects Changed : {changed}"
+        f"Effects Changed       : {changed}"
     )
-
-    print()
 
     print(
-        f"Unknown Functions : {unknown.count()}"
+        f"Unknown Functions     : {unknown.count()}"
     )
+
+    print(
+        f"Output File           : {OUTPUT_XSQ}"
+    )
+
+    print("--------------------------------")
 
 
 if __name__ == "__main__":

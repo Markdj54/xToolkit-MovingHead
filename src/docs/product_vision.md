@@ -2,8 +2,22 @@
 
 ## Vision
 
+# xToolkit
+
+## Vision
+
+Make any moving-head sequence work on your lighting rig.
+
+xToolkit analyses moving-head fixture personalities, compares their capabilities, and translates xLights sequences so they can be played on different lighting hardware with the closest possible visual match.
+
+The goal is **not** to reproduce identical DMX data.
+
+The goal is to reproduce the **same visual performance**.
+
 xToolkit exists to solve one problem exceptionally well:
 
+**Translate imported xLights moving head sequences from one fixture type to another without requiring users to manually edit hundreds of DMX parameters.**
+or
 **Translate imported xLights moving head sequences from one fixture type to another without requiring users to manually edit hundreds of DMX parameters.**
 
 The application is not intended to replace xLights.
