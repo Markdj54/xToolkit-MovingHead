@@ -4,7 +4,7 @@ translate_sequence.py
 Translates an imported xLights sequence from one moving
 head fixture personality to another.
 
-Sprint 14
+Sprint 15
 """
 
 from core.services.rgbeffects_reader import RGBEffectsReader
@@ -119,9 +119,11 @@ def main():
         SOURCE_MODEL,
     )
 
-    source_fixture = importer.import_model(
+    source_import = importer.import_model(
         source_model,
     )
+
+    source_fixture = source_import.canonical
 
     #
     # Destination fixture
@@ -136,9 +138,11 @@ def main():
         DESTINATION_MODEL,
     )
 
-    destination_fixture = importer.import_model(
+    destination_import = importer.import_model(
         destination_model,
     )
+
+    destination_fixture = destination_import.canonical
 
     #
     # Build Translation Map

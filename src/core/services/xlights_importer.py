@@ -1,11 +1,13 @@
 """
 xlights_importer.py
 
-Converts xLights models into CanonicalFixture objects.
+Converts xLights models into ImportedFixture objects.
 """
 
 from core.domain.canonical_fixture import CanonicalFixture
 from core.domain.fixture_capability import FixtureCapability
+from core.domain.imported_fixture import ImportedFixture
+from core.domain.moving_head_data import MovingHeadData
 
 from core.services.function_resolver import FunctionResolver
 from core.services.unknown_function_registry import (
@@ -40,7 +42,7 @@ class XLightsImporter:
 
     # ---------------------------------------------------------
 
-    def import_model(self, model) -> CanonicalFixture:
+    def import_model(self, model) -> ImportedFixture:
 
         if model.display_as == "DmxMovingHead3D":
             return self._import_dmx_moving_head_3d(model)
@@ -52,7 +54,7 @@ class XLightsImporter:
     def _import_dmx_moving_head_adv(
         self,
         model,
-    ) -> CanonicalFixture:
+    ) -> ImportedFixture:
 
         fixture = CanonicalFixture(
             name=model.name
@@ -81,14 +83,17 @@ class XLightsImporter:
                 capability
             )
 
-        return fixture
+        return ImportedFixture(
+            canonical=fixture,
+            moving_head=MovingHeadData(),
+        )
 
     # ---------------------------------------------------------
 
     def _import_dmx_moving_head_3d(
         self,
         model,
-    ) -> CanonicalFixture:
+    ) -> ImportedFixture:
 
         fixture = CanonicalFixture(
             name=model.name
@@ -128,4 +133,7 @@ class XLightsImporter:
                 capability
             )
 
-        return fixture
+        return ImportedFixture(
+            canonical=fixture,
+            moving_head=MovingHeadData(),
+        )
