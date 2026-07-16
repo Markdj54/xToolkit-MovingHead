@@ -25,10 +25,25 @@ class Model:
         "DmxColorWheelChannel": "Color",
     }
 
-    def __init__(self, attributes: dict):
+    def __init__(
+        self,
+        attributes: dict,
+        elements=None,
+    ):
 
         # Store every XML attribute
         self.attributes = dict(attributes)
+
+        # Store child XML elements
+        self.elements = {}
+
+        if elements:
+
+            for element in elements:
+
+                self.elements[element.tag] = dict(
+                    element.attrib
+                )
 
         # Frequently used properties
         self.name = attributes.get("name", "")
@@ -50,32 +65,52 @@ class Model:
         node_string = attributes.get("NodeNames", "")
 
         if node_string:
+
             self.node_names = [
                 name.strip()
                 for name in node_string.split(",")
             ]
 
-        # Moving Head information
         self.moving_head = None
 
         if self.is_moving_head():
+
             self.moving_head = MovingHeadData()
 
-    def get(self, key, default=""):
+    def get(
+        self,
+        key,
+        default="",
+    ):
         """Return any XML attribute."""
-        return self.attributes.get(key, default)
+        return self.attributes.get(
+            key,
+            default,
+        )
+
+    def get_element(
+        self,
+        name,
+    ):
+        """Return a child XML element."""
+
+        return self.elements.get(
+            name,
+            {},
+        )
 
     def keys(self):
-        """Return all attribute names."""
         return self.attributes.keys()
 
     def items(self):
-        """Return (key, value) pairs."""
         return self.attributes.items()
 
     # ---------------------------------------------------------
 
-    def get_channel_name(self, channel):
+    def get_channel_name(
+        self,
+        channel,
+    ):
 
         #
         # Old Moving Head (NodeNames)
@@ -89,7 +124,9 @@ class Model:
             if channel > len(self.node_names):
                 return "Unknown"
 
-            return self.node_names[channel - 1]
+            return self.node_names[
+                channel - 1
+            ]
 
         #
         # DmxMovingHead3D
@@ -126,7 +163,6 @@ class Model:
         }
 
     def is_moving_head(self):
-        """True if this is any supported Moving Head."""
 
         return self.display_as in (
             "DmxMovingHeadAdv",
@@ -134,10 +170,13 @@ class Model:
         )
 
     def has_moving_head_data(self):
+
         return self.moving_head is not None
 
     def __str__(self):
+
         return self.name
 
     def __repr__(self):
+
         return f"<Model {self.name}>"

@@ -15,7 +15,7 @@ from core.services.unknown_function_registry import (
 )
 from core.services.fixture_report import FixtureReport
 
-from core.importers.xlights_importer import XLightsImporter
+from core.services.xlights_importer import XLightsImporter
 
 
 # -------------------------------------------------

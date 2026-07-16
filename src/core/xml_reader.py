@@ -1,6 +1,6 @@
 import xml.etree.ElementTree as ET
 
-from core.model import Model
+from core.domain.model import Model
 
 
 class XMLReader:
@@ -28,11 +28,16 @@ class XMLReader:
 
         for xml_model in models_section:
 
-            model = Model(xml_model.attrib)
+            model = Model(
+                xml_model.attrib,
+                list(xml_model),
+            )
 
             self.models.append(model)
 
-        self.models.sort(key=lambda m: m.name.lower())
+        self.models.sort(
+            key=lambda m: m.name.lower()
+        )
 
         return True
 
@@ -71,7 +76,11 @@ class XMLReader:
 
     def get_moving_heads(self):
 
-        return [m for m in self.models if m.is_moving_head()]
+        return [
+            m
+            for m in self.models
+            if m.is_moving_head()
+        ]
 
     # ---------------------------------------------
     # Count models

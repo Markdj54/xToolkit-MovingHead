@@ -8,7 +8,7 @@ from core.services.unknown_function_registry import (
     UnknownFunctionRegistry,
 )
 
-from core.importers.xlights_importer import XLightsImporter
+from core.services.xlights_importer import XLightsImporter
 
 
 # ------------------------------------------
@@ -46,7 +46,9 @@ for model in reader.get_models():
     if not model.is_moving_head():
         continue
 
-    fixture = importer.import_model(model)
+    imported_fixture = importer.import_model(model)
+
+    fixture = imported_fixture.canonical
 
     print("--------------------------------")
     print("Fixture:", fixture.name)

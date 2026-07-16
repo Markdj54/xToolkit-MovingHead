@@ -14,7 +14,7 @@ from core.services.unknown_function_registry import (
     UnknownFunctionRegistry,
 )
 
-from core.importers.xlights_importer import XLightsImporter
+from core.services.xlights_importer import XLightsImporter
 from core.services.translation_builder import (
     TranslationBuilder,
 )
