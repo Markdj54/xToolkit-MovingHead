@@ -13,6 +13,18 @@ from core.domain.moving_head_data import MovingHeadData
 class Model:
     """Represents one xLights model."""
 
+    #
+    # DmxMovingHead3D channel attributes
+    #
+
+    DMX3D_CHANNELS = {
+        "DmxPanChannel": "Pan",
+        "DmxTiltChannel": "Tilt",
+        "DmxDimmerChannel": "Dimmer",
+        "DmxShutterChannel": "Shutter",
+        "DmxColorWheelChannel": "Color",
+    }
+
     def __init__(self, attributes: dict):
 
         # Store every XML attribute
@@ -61,15 +73,46 @@ class Model:
         """Return (key, value) pairs."""
         return self.attributes.items()
 
+    # ---------------------------------------------------------
+
     def get_channel_name(self, channel):
 
-        if channel < 1:
-            return "Invalid"
+        #
+        # Old Moving Head (NodeNames)
+        #
 
-        if channel > len(self.node_names):
-            return "Unknown"
+        if self.node_names:
 
-        return self.node_names[channel - 1]
+            if channel < 1:
+                return "Invalid"
+
+            if channel > len(self.node_names):
+                return "Unknown"
+
+            return self.node_names[channel - 1]
+
+        #
+        # DmxMovingHead3D
+        #
+
+        for attribute, function in self.DMX3D_CHANNELS.items():
+
+            value = self.get(attribute)
+
+            if not value:
+                continue
+
+            try:
+
+                if int(value) == channel:
+                    return function
+
+            except ValueError:
+                continue
+
+        return "Unknown"
+
+    # ---------------------------------------------------------
 
     def get_summary(self):
 
@@ -83,8 +126,12 @@ class Model:
         }
 
     def is_moving_head(self):
-        """True if this is a Moving Head."""
-        return self.display_as == "DmxMovingHeadAdv"
+        """True if this is any supported Moving Head."""
+
+        return self.display_as in (
+            "DmxMovingHeadAdv",
+            "DmxMovingHead3D",
+        )
 
     def has_moving_head_data(self):
         return self.moving_head is not None

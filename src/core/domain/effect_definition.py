@@ -51,9 +51,9 @@ class EffectDefinition:
 
     def is_moving_head(self) -> bool:
 
-        for name in self.parameters:
+        for name in self.parameters.keys():
 
-            if "_DMX" in name:
+            if "DMX" in name:
                 return True
 
         return False

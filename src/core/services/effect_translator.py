@@ -30,10 +30,26 @@ class EffectTranslator:
             effect_type=effect.effect_type,
         )
 
+        #
+        # Preserve original XML node.
+        #
+
+        if effect.has_xml_element():
+
+            translated.set_xml_element(
+                effect.xml_element()
+            )
+
+        #
+        # Translate every parameter name.
+        #
+
         for parameter, value in effect.parameters.items():
 
-            new_parameter = self.parameter_translator.translate(
-                parameter
+            new_parameter = (
+                self.parameter_translator.translate(
+                    parameter
+                )
             )
 
             translated.set(
